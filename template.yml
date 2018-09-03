@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: A simple backend with a RESTful API endpoint using Amazon API Gateway.
+Resources:
+  hello:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: handler.hello
+      Runtime: nodejs8.10
+      CodeUri: .
+      Description: A simple backend with a RESTful API endpoint using Amazon API Gateway.
+      MemorySize: 512
+      Timeout: 10
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - 'dynamodb:DeleteItem'
+                - 'dynamodb:GetItem'
+                - 'dynamodb:PutItem'
+                - 'dynamodb:UpdateItem'
+              Resource:
+                'Fn::Join':
+                  - ''
+                  - - 'arn:aws:dynamodb:'
+                    - Ref: 'AWS::Region'
+                    - ':'
+                    - Ref: 'AWS::AccountId'
+                    - ':table/myHelloTable'
+      Events:
+        Api1:
+          Type: Api
+          Properties:
+            Path: /hello
+            Method: POST
+        Api2:
+          Type: Api
+          Properties:
+            Path: /hello/{itemId}
+            Method: ANY
+  myHelloTable:
+    Type: 'AWS::DynamoDB::Table'
+    Properties:
+      TableName: myHelloTable
+      AttributeDefinitions:
+        - AttributeName: itemId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: itemId
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
