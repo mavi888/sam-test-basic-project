@@ -3,7 +3,7 @@
 const AWS = require('aws-sdk');
 let dynamo = new AWS.DynamoDB.DocumentClient();
 
-const TABLE_NAME = 'myHelloTable';
+const TABLE_NAME = process.env.myHelloTable;
 
 module.exports.initializateDynamoClient = newDynamo => {
 	dynamo = newDynamo;
@@ -19,14 +19,14 @@ module.exports.saveItem = item => {
 		.put(params)
 		.promise()
 		.then(() => {
-			return item.itemId;
+			return item.id;
 		});
 };
 
-module.exports.getItem = itemId => {
+module.exports.getItem = id => {
 	const params = {
 		Key: {
-			itemId: itemId
+			id
 		},
 		TableName: TABLE_NAME
 	};
@@ -39,10 +39,10 @@ module.exports.getItem = itemId => {
 		});
 };
 
-module.exports.deleteItem = itemId => {
+module.exports.deleteItem = id => {
 	const params = {
 		Key: {
-			itemId: itemId
+			id: id
 		},
 		TableName: TABLE_NAME
 	};
@@ -50,13 +50,13 @@ module.exports.deleteItem = itemId => {
 	return dynamo.delete(params).promise();
 };
 
-module.exports.updateItem = (itemId, paramsName, paramsValue) => {
+module.exports.updateItem = (id, paramsName, paramsValue) => {
 	const params = {
 		TableName: TABLE_NAME,
 		Key: {
-			itemId
+			id
 		},
-		ConditionExpression: 'attribute_exists(itemId)',
+		ConditionExpression: 'attribute_exists(id)',
 		UpdateExpression: 'set ' + paramsName + ' = :v',
 		ExpressionAttributeValues: {
 			':v': paramsValue
