@@ -13,7 +13,7 @@ Resources:
       Timeout: 10
       Policies:
       - DynamoDBCrudPolicy:
-          TableName: myHelloTable
+          TableName: !Ref myHelloTable
       Environment:
         Variables:
           myHelloTable: !Ref myHelloTable
