@@ -5,6 +5,7 @@ const uuidv1 = require('uuid/v1');
 
 exports.hello = (event, context, callback) => {
 	console.log(event);
+	console.log(process.env);
 
 	switch (event.httpMethod) {
 		case 'DELETE':
@@ -27,39 +28,39 @@ exports.hello = (event, context, callback) => {
 function saveItem(event, callback) {
 	const item = JSON.parse(event.body);
 
-	item.itemId = uuidv1();
+	item.id = uuidv1();
 
 	databaseManager.saveItem(item).then(response => {
 		console.log(response);
-		sendResponse(200, item.itemId, callback);
+		sendResponse(200, item.id, callback);
 	});
 }
 
 function getItem(event, callback) {
-	const itemId = event.pathParameters.itemId;
+	const id = event.pathParameters.id;
 
-	databaseManager.getItem(itemId).then(response => {
+	databaseManager.getItem(id).then(response => {
 		console.log(response);
 		sendResponse(200, JSON.stringify(response), callback);
 	});
 }
 
 function deleteItem(event, callback) {
-	const itemId = event.pathParameters.itemId;
+	const id = event.pathParameters.id;
 
-	databaseManager.deleteItem(itemId).then(response => {
+	databaseManager.deleteItem(id).then(response => {
 		sendResponse(200, 'DELETE ITEM', callback);
 	});
 }
 
 function updateItem(event, callback) {
-	const itemId = event.pathParameters.itemId;
+	const id = event.pathParameters.id;
 
 	const body = JSON.parse(event.body);
 	const paramName = body.paramName;
 	const paramValue = body.paramValue;
 
-	databaseManager.updateItem(itemId, paramName, paramValue).then(response => {
+	databaseManager.updateItem(id, paramName, paramValue).then(response => {
 		console.log(response);
 		sendResponse(200, JSON.stringify(response), callback);
 	});

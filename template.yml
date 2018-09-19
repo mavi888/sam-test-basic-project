@@ -12,22 +12,11 @@ Resources:
       MemorySize: 512
       Timeout: 10
       Policies:
-        - Version: '2012-10-17'
-          Statement:
-            - Effect: Allow
-              Action:
-                - 'dynamodb:DeleteItem'
-                - 'dynamodb:GetItem'
-                - 'dynamodb:PutItem'
-                - 'dynamodb:UpdateItem'
-              Resource:
-                'Fn::Join':
-                  - ''
-                  - - 'arn:aws:dynamodb:'
-                    - Ref: 'AWS::Region'
-                    - ':'
-                    - Ref: 'AWS::AccountId'
-                    - ':table/myHelloTable'
+      - DynamoDBCrudPolicy:
+          TableName: !Ref myHelloTable
+      Environment:
+        Variables:
+          myHelloTable: !Ref myHelloTable
       Events:
         Api1:
           Type: Api
@@ -37,18 +26,7 @@ Resources:
         Api2:
           Type: Api
           Properties:
-            Path: /hello/{itemId}
+            Path: /hello/{id}
             Method: ANY
   myHelloTable:
-    Type: 'AWS::DynamoDB::Table'
-    Properties:
-      TableName: myHelloTable
-      AttributeDefinitions:
-        - AttributeName: itemId
-          AttributeType: S
-      KeySchema:
-        - AttributeName: itemId
-          KeyType: HASH
-      ProvisionedThroughput:
-        ReadCapacityUnits: 1
-        WriteCapacityUnits: 1
+    Type: 'AWS::Serverless::SimpleTable'
