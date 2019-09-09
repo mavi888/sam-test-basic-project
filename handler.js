@@ -3,72 +3,67 @@
 const databaseManager = require('./databaseManager');
 const uuidv1 = require('uuid/v1');
 
-exports.hello = (event, context, callback) => {
+exports.hello = async (event) => {
 	console.log(event);
 
 	switch (event.httpMethod) {
 		case 'DELETE':
-			deleteItem(event, callback);
-			break;
+			return deleteItem(event);
 		case 'GET':
-			getItem(event, callback);
-			break;
+			return getItem(event);
 		case 'POST':
-			saveItem(event, callback);
-			break;
+			return saveItem(event);
 		case 'PUT':
-			updateItem(event, callback);
-			break;
+			return updateItem(event);
 		default:
-			sendResponse(404, `Unsupported method "${event.httpMethod}"`, callback);
+			return sendResponse(404, `Unsupported method "${event.httpMethod}"`);
 	}
 };
 
-function saveItem(event, callback) {
+function saveItem(event) {
 	const item = JSON.parse(event.body);
-
 	item.itemId = uuidv1();
 
-	databaseManager.saveItem(item).then(response => {
+	return databaseManager.saveItem(item).then(response => {
 		console.log(response);
-		sendResponse(200, item.itemId, callback);
+		return sendResponse(200, item.itemId);
 	});
 }
 
-function getItem(event, callback) {
+function getItem(event) {
 	const itemId = event.pathParameters.itemId;
 
-	databaseManager.getItem(itemId).then(response => {
+	return databaseManager.getItem(itemId).then(response => {
 		console.log(response);
-		sendResponse(200, JSON.stringify(response), callback);
+		return sendResponse(200, JSON.stringify(response));
 	});
 }
 
-function deleteItem(event, callback) {
+function deleteItem(event) {
 	const itemId = event.pathParameters.itemId;
 
-	databaseManager.deleteItem(itemId).then(response => {
-		sendResponse(200, 'DELETE ITEM', callback);
+	return databaseManager.deleteItem(itemId).then(response => {
+		return sendResponse(200, 'DELETE ITEM');
 	});
 }
 
-function updateItem(event, callback) {
+function updateItem(event) {
 	const itemId = event.pathParameters.itemId;
 
 	const body = JSON.parse(event.body);
 	const paramName = body.paramName;
 	const paramValue = body.paramValue;
 
-	databaseManager.updateItem(itemId, paramName, paramValue).then(response => {
+	return databaseManager.updateItem(itemId, paramName, paramValue).then(response => {
 		console.log(response);
-		sendResponse(200, JSON.stringify(response), callback);
+		return sendResponse(200, JSON.stringify(response));
 	});
 }
 
-function sendResponse(statusCode, message, callback) {
+function sendResponse(statusCode, message) {
 	const response = {
 		statusCode: statusCode,
 		body: JSON.stringify(message)
 	};
-	callback(null, response);
+	return response
 }

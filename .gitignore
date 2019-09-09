@@ -1,3 +1,6 @@
 
 node_modules/
 packaged-template.yaml
+.aws-sam/
+commands-dpeloying
+sam-test-basic-project-packaged.yaml

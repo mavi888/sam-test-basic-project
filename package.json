@@ -1,0 +1,23 @@
+{
+  "name": "sam-test-basic-project",
+  "version": "1.0.0",
+  "description": "aws cloudformation package --template-file template.yml --s3-bucket <name-of-the-bucket> --output-template-file packaged-template.yaml",
+  "main": "databaseManager.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mavi888/sam-test-basic-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mavi888/sam-test-basic-project/issues"
+  },
+  "homepage": "https://github.com/mavi888/sam-test-basic-project#readme",
+  "dependencies": {
+    "uuid": "^3.3.3"
+  }
+}
